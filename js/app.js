@@ -50,9 +50,10 @@
       projection: { type: "globe" },
       glyphs: TILES + "/fonts/{fontstack}/{range}.pbf",
       sky: {
-        "sky-color": "#0b1324", "horizon-color": "#26406b", "fog-color": "#0b1324",
-        "sky-horizon-blend": 0.6, "horizon-fog-blend": 0.6, "fog-ground-blend": 0.75, "atmosphere-blend": 0.8
+        "sky-color": "#141a3a", "horizon-color": "#d9824b", "fog-color": "#2b2142",
+        "sky-horizon-blend": 0.55, "horizon-fog-blend": 0.7, "fog-ground-blend": 0.8, "atmosphere-blend": 0.85
       },
+      light: { anchor: "map", position: [1.3, 250, 35], color: "#ffd7a3", intensity: 0.5 },
       sources: {
         omt: { type: "vector", url: TILES + "/planet",
           attribution: '<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank">OpenMapTiles</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>' },
@@ -113,7 +114,7 @@
         { id: "buildings", type: "fill-extrusion", source: "omt", "source-layer": "building", minzoom: 13,
           paint: {
             "fill-extrusion-color": ["interpolate", ["linear"], ["coalesce", ["get", "render_height"], 8],
-              0, "#2f3b5a", 20, "#46557a", 60, "#6f7ea3", 150, "#c9b48a"],
+              0, "#363249", 15, "#4c4459", 40, "#6c5d66", 90, "#8f7668", 180, "#b39073"],
             "fill-extrusion-height": ["interpolate", ["linear"], ["zoom"], 13, 0, 14.5, ["coalesce", ["get", "render_height"], 8]],
             "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
             "fill-extrusion-opacity": 0.92
@@ -121,7 +122,8 @@
         { id: "place-footprint", type: "fill-extrusion", source: "footprints", minzoom: 11,
           paint: {
             "fill-extrusion-color": ["get", "color"],
-            "fill-extrusion-height": ["case", ["boolean", ["feature-state", "sel"], false], ["*", ["get", "height"], 1.25], ["get", "height"]],
+            "fill-extrusion-height": ["*", ["get", "height"], ["coalesce", ["feature-state", "grow"], 1],
+              ["case", ["boolean", ["feature-state", "sel"], false], 1.25, 1]],
             "fill-extrusion-base": 0,
             "fill-extrusion-opacity": 0.95
           } },
@@ -243,7 +245,7 @@
     else if (params.get("city") && cityById[params.get("city")]) $("enterBtn").dataset.city = params.get("city");
   });
   const styleReady = new Promise((res) => (map.style && map.style._loaded ? res() : map.once("style.load", res)));
-  styleReady.then(() => {
+  const allReady = styleReady.then(() => {
     ready = true;
     applyTerrain();
     return dataReady;
@@ -263,6 +265,7 @@
     }
     map.getSource("places").setData({ type: "FeatureCollection", features: pts });
     map.getSource("footprints").setData({ type: "FeatureCollection", features: polys });
+    if (window.FARDA) window.FARDA.emit("data");
   }
 
   ["place-footprint", "place-halo", "place-dot", "place-label", "place-label-small"].forEach((layer) => {
@@ -299,6 +302,7 @@
     else ig.hidden = true;
     $("toast").hidden = true;
     $("card").hidden = false;
+    if (window.FARDA) window.FARDA.emit("open", { id, fly });
     const u = new URL(location.href);
     u.searchParams.set("id", id);
     u.searchParams.delete("city");
@@ -370,6 +374,7 @@
   $("mode3d").onclick = () => {
     use3d = !use3d;
     applyTerrain();
+    if (window.FARDA) window.FARDA.emit("lite", !use3d);
     if (!use3d) map.easeTo({ pitch: 0 });
   };
 
@@ -499,6 +504,26 @@
     lang = lang === "fa" ? "en" : "fa";
     localStorage.setItem("farda-lang", lang);
     renderTexts();
+    if (window.FARDA) window.FARDA.emit("lang", lang);
   };
   renderTexts();
+
+  // ── public API for feature modules (js/fx.js, js/story.js …) ──
+  const bus = document;
+  const api = {
+    map, CFG, t, num, catOf, pName, pText, cName, square,
+    get lang() { return lang; },
+    get lite() { return !use3d; },
+    get places() { return places; },
+    get cities() { return cities; },
+    get current() { return current; },
+    byId, cityById, params,
+    openPlace, closeCard, flyCity, IRAN_VIEW, TOP_CITIES,
+    reduceMotion: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    ready: allReady,
+    emit: (name, detail) => bus.dispatchEvent(new CustomEvent("farda:" + name, { detail })),
+    on: (name, fn) => bus.addEventListener("farda:" + name, (e) => fn(e.detail))
+  };
+  window.FARDA = api;
+
 })();
