@@ -301,6 +301,8 @@
     if (p.instagram) { ig.href = "https://instagram.com/" + encodeURIComponent(p.instagram); ig.textContent = "@" + p.instagram; ig.hidden = false; }
     else ig.hidden = true;
     $("toast").hidden = true;
+    delete $("card").dataset.memorial;
+    $("storyBtn") && ($("storyBtn").hidden = false);
     $("card").hidden = false;
     if (window.FARDA) window.FARDA.emit("open", { id, fly });
     const u = new URL(location.href);
@@ -327,8 +329,10 @@
     $("card").hidden = true;
     setSel(current, false);
     current = null;
+    delete $("card").dataset.memorial;
     const u = new URL(location.href);
     u.searchParams.delete("id");
+    u.searchParams.delete("street");
     history.replaceState(null, "", u);
   }
   $("cardClose").onclick = closeCard;
@@ -336,11 +340,13 @@
   function toast(msg) { const el = $("toast"); el.textContent = msg; el.hidden = false; }
 
   $("shareBtn").onclick = async () => {
+    const mid = $("card").dataset.memorial;
     const p = byId[current];
-    if (!p) return;
+    if (!p && !mid) return;
     const u = new URL(location.href);
-    u.search = "?id=" + encodeURIComponent(p.id);
-    const data = { title: pName(p) + " · " + CFG.name[lang], text: pName(p), url: u.toString() };
+    u.search = mid ? "?street=" + encodeURIComponent(mid) : "?id=" + encodeURIComponent(p.id);
+    const label = mid ? $("cardName").textContent : pName(p);
+    const data = { title: label + " · " + CFG.name[lang], text: label, url: u.toString() };
     try {
       if (navigator.share) { await navigator.share(data); return; }
     } catch (e) { if (e && e.name === "AbortError") return; }

@@ -46,6 +46,7 @@
     <button id="mode3d" class="ghost" type="button" data-i18n="mode3d"></button>
     <button id="satBtn" class="ghost" type="button" data-i18n="sat"></button>
     <button id="tlBtn" class="ghost" type="button" data-i18n="timeline"></button>
+    <button id="memBtn" class="ghost mem" type="button" data-i18n="memBtn"></button>
     <button id="homeBtn" class="ghost" type="button" data-i18n="home"></button>
   </div>
 </nav>
@@ -96,6 +97,17 @@
   </div>
 </div>
 
+<div id="memModal" class="overlay" hidden>
+  <div class="modal mem-modal">
+    <button class="close" id="memClose" type="button" aria-label="×">×</button>
+    <h2 data-i18n="memTitle"></h2>
+    <p data-i18n="memLead"></p>
+    <p class="fine" id="memCount"></p>
+    <ul id="memList" class="mem-list"></ul>
+    <p class="fine" data-i18n="memFamily"></p>
+  </div>
+</div>
+
 <div id="storyModal" class="overlay" hidden>
   <div class="modal story-modal">
     <button class="close" id="storyClose" type="button" aria-label="×">×</button>
@@ -111,10 +123,12 @@
 <script src="js/app.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/landmarks.js"></script>
+<script src="js/memorial.js"></script>
 <script src="js/story.js"></script>
 <script src="js/timeline.js"></script>
 <script src="js/season.js"></script>
 <script src="js/day0.js"></script>
 <script src="js/tour.js"></script>
+<script src="js/reel.js"></script>
 </body>
 </html>

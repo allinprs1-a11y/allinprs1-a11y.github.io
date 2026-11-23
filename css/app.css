@@ -187,3 +187,21 @@ body.tour .chapter { display: none; }
 .d0-fx { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 7; }
 .d0-plane svg { transform: scale(var(--s, 1)); filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
 #day0Btn { margin-top: .9rem; }
+
+/* Memorial streets */
+.ghost.mem { border-color: rgba(255,243,214,.55); }
+.mem-modal h2 { color: #fff3d6; }
+.mem-list { list-style: none; margin: .4rem 0; padding: 0; max-height: 48vh; overflow: auto; }
+.mem-list li { padding: .55em .7em; border-radius: 10px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.06); }
+.mem-list li:hover { background: rgba(255,243,214,.08); }
+.mem-list small { display: block; color: var(--muted); }
+#cardOwner a { color: #fff3d6; }
+
+.reel-cap { bottom: 18%; }
+.reel-end {
+  position: fixed; z-index: 8; left: 50%; bottom: 8%; transform: translateX(-50%); direction: ltr;
+  color: var(--teal); font-weight: 800; font-size: clamp(1rem, 4.5vw, 1.6rem); text-shadow: 0 2px 12px #000;
+  opacity: 0; transition: opacity .6s; white-space: nowrap;
+}
+.reel-end.show { opacity: 1; }
+body:not(.tour) .reel-end { display: none; }
