@@ -182,3 +182,8 @@ body.tour .chapter { display: none; }
 .actions { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
 .actions::-webkit-scrollbar { display: none; }
 .actions button { flex: none; }
+
+/* Day 0 */
+.d0-fx { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 7; }
+.d0-plane svg { transform: scale(var(--s, 1)); filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
+#day0Btn { margin-top: .9rem; }

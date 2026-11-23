@@ -65,6 +65,7 @@
     start.hidden = true;
     const list = steps();
     do {
+      if (F.params.get("day0") === "1" && F.day0) await F.day0();
       map.jumpTo({ center: [53.6, 30], zoom: 1.7, pitch: 0, bearing: 0 });
       for (const step of list) {
         caption(step);
