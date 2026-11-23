@@ -54,7 +54,7 @@
   async function run() {
     start.hidden = true;
     const lit = map.getPaintProperty("buildings", "fill-extrusion-color");
-    const cafe = F.places.find((p) => p.id === "nemone-kafe-tajrish") || F.places.find((p) => p.category === "food") || F.places[0];
+    const cafe = F.places.find((p) => p.id === "kafe-ketab-enghelab") || F.places.find((p) => p.category === "food") || F.places[0];
     const street = (window.FARDA.memorialList || [])[0];
 
     // 0–3 s: hook — globe dives to Iran

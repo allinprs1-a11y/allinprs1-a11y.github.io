@@ -296,7 +296,7 @@
     $("cardName").textContent = pName(p);
     $("cardSub").textContent = [cName(cityById[p.city]), p.day != null ? t("dayN", { n: num(p.day) }) : ""].filter(Boolean).join(lang === "fa" ? "، " : " · ");
     $("cardText").textContent = pText(p) || "";
-    $("cardOwner").textContent = p.owner ? t("by", { o: p.example && lang === "en" ? t("example") : p.owner }) : "";
+    $("cardOwner").textContent = p.owner ? t("by", { o: lang === "en" && p.owner === "تیم ایرانِ فردا" ? "Iran Farda team" : p.example && lang === "en" ? t("example") : p.owner }) : "";
     const ig = $("cardIg");
     if (p.instagram) { ig.href = "https://instagram.com/" + encodeURIComponent(p.instagram); ig.textContent = "@" + p.instagram; ig.hidden = false; }
     else ig.hidden = true;
