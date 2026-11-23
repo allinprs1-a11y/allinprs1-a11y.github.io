@@ -31,12 +31,21 @@
   <button class="lang" id="langBtn" type="button">EN</button>
 </header>
 
+<div class="stats" id="stats" aria-live="polite"></div>
+<button class="chapter" id="chapter" type="button" hidden></button>
+
 <nav class="bottom">
+  <div class="timeline" id="timeline" hidden>
+    <button id="tlPlay" class="primary" type="button" aria-label="play">▶</button>
+    <input id="tlRange" type="range" min="0" max="0" step="1" value="0" aria-label="day">
+    <span id="tlDay"></span>
+  </div>
   <div class="chips" id="cityChips"></div>
   <div class="actions">
     <button id="addBtn" class="primary" type="button" data-i18n="addBtn"></button>
     <button id="mode3d" class="ghost" type="button" data-i18n="mode3d"></button>
     <button id="satBtn" class="ghost" type="button" data-i18n="sat"></button>
+    <button id="tlBtn" class="ghost" type="button" data-i18n="timeline"></button>
     <button id="homeBtn" class="ghost" type="button" data-i18n="home"></button>
   </div>
 </nav>
@@ -50,6 +59,7 @@
   <p class="owner" id="cardOwner"></p>
   <div class="row">
     <button id="shareBtn" class="primary" type="button" data-i18n="share"></button>
+    <button id="storyBtn" class="ghost" type="button" data-i18n="story"></button>
     <a id="cardIg" class="ghost btn" target="_blank" rel="noopener" hidden>Instagram</a>
   </div>
   <p class="toast" id="toast" hidden></p>
@@ -85,10 +95,23 @@
   </div>
 </div>
 
+<div id="storyModal" class="overlay" hidden>
+  <div class="modal story-modal">
+    <button class="close" id="storyClose" type="button" aria-label="×">×</button>
+    <p data-i18n="storySave"></p>
+    <img id="storyImg" alt="">
+    <a id="storyDl" class="primary btn" data-i18n="download"></a>
+  </div>
+</div>
+
 <script src="vendor/maplibre-gl.js"></script>
 <script src="js/config.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/app.js"></script>
 <script src="js/fx.js"></script>
+<script src="js/story.js"></script>
+<script src="js/timeline.js"></script>
+<script src="js/season.js"></script>
+<script src="js/tour.js"></script>
 </body>
 </html>

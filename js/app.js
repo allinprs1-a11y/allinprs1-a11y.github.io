@@ -259,7 +259,7 @@
     for (const p of places) {
       const color = catOf(p).color;
       const props = { id: p.id, color, label: pName(p), vision: p.category === "vision",
-        height: p.height || 30 };
+        height: p.height || 30, day: p.day || 0 };
       pts.push({ type: "Feature", id: p.id, properties: props, geometry: { type: "Point", coordinates: [p.lng, p.lat] } });
       polys.push({ type: "Feature", id: p.id, properties: props, geometry: { type: "Polygon", coordinates: square(p.lng, p.lat, p.size || 40) } });
     }
@@ -294,7 +294,7 @@
     $("cardCat").textContent = lang === "en" ? cat.en : cat.fa;
     $("cardCat").style.background = cat.color;
     $("cardName").textContent = pName(p);
-    $("cardSub").textContent = [cName(cityById[p.city]), p.day != null ? t("dayN", { n: num(p.day) }) : ""].filter(Boolean).join(" · ");
+    $("cardSub").textContent = [cName(cityById[p.city]), p.day != null ? t("dayN", { n: num(p.day) }) : ""].filter(Boolean).join(lang === "fa" ? "، " : " · ");
     $("cardText").textContent = pText(p) || "";
     $("cardOwner").textContent = p.owner ? t("by", { o: p.example && lang === "en" ? t("example") : p.owner }) : "";
     const ig = $("cardIg");
@@ -310,12 +310,17 @@
     if (fly) {
       // Pick a zoom where the footprint fills roughly an eighth of the screen.
       const size = p.size || 40;
-      const px = 0.12 * Math.min(window.innerWidth, window.innerHeight);
-      const zoom = Math.max(12, Math.min(15.8, Math.log2((156543 * Math.cos((p.lat * Math.PI) / 180) * px) / size)));
+      const zoom = zoomFor(p);
       map.flyTo({ center: [p.lng, p.lat], zoom,
         pitch: size >= 200 ? 55 : 62, bearing: (map.getBearing() + 25) % 360, speed: 0.9, curve: 1.5, essential: true,
         padding: window.innerWidth <= 640 ? { bottom: window.innerHeight * 0.35 } : { right: 0 } });
     }
+  }
+
+  function zoomFor(p) {
+    const size = p.size || 40;
+    const px = 0.12 * Math.min(window.innerWidth, window.innerHeight);
+    return Math.max(12, Math.min(15.8, Math.log2((156543 * Math.cos((p.lat * Math.PI) / 180) * px) / size)));
   }
 
   function closeCard() {
@@ -400,7 +405,7 @@
       const small = document.createElement("small");
       if (h.kind === "p") {
         strong.textContent = pName(h.p);
-        small.textContent = [cName(cityById[h.p.city]), lang === "en" ? catOf(h.p).en : catOf(h.p).fa].join(" · ");
+        small.textContent = [cName(cityById[h.p.city]), lang === "en" ? catOf(h.p).en : catOf(h.p).fa].join(lang === "fa" ? "، " : " · ");
       } else {
         strong.textContent = cName(h.c);
         small.textContent = "📍";
@@ -518,7 +523,7 @@
     get cities() { return cities; },
     get current() { return current; },
     byId, cityById, params,
-    openPlace, closeCard, flyCity, IRAN_VIEW, TOP_CITIES,
+    openPlace, closeCard, flyCity, zoomFor, IRAN_VIEW, TOP_CITIES,
     reduceMotion: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     ready: allReady,
     emit: (name, detail) => bus.dispatchEvent(new CustomEvent("farda:" + name, { detail })),

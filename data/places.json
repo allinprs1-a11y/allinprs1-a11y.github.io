@@ -2,6 +2,7 @@
   {
     "id": "daryache-urmia",
     "day": 1,
+    "jobs": 18000,
     "category": "vision",
     "city": "urmia",
     "lng": 45.52, "lat": 37.72,
@@ -15,6 +16,7 @@
   {
     "id": "ghatar-sari-tehran-mashhad",
     "day": 3,
+    "jobs": 42000,
     "category": "vision",
     "city": "tehran",
     "lng": 51.4205, "lat": 35.6612,
@@ -28,6 +30,7 @@
   {
     "id": "dare-fanavari-pardis",
     "day": 5,
+    "jobs": 25000,
     "category": "vision",
     "city": "tehran",
     "lng": 51.787, "lat": 35.745,
@@ -41,6 +44,7 @@
   {
     "id": "markaz-mali-kish",
     "day": 7,
+    "jobs": 15000,
     "category": "vision",
     "city": "kish",
     "lng": 53.995, "lat": 26.552,
@@ -54,6 +58,7 @@
   {
     "id": "takhte-jamshid",
     "day": 9,
+    "jobs": 6000,
     "category": "tourism",
     "city": "shiraz",
     "lng": 52.8916, "lat": 29.9355,
@@ -67,6 +72,7 @@
   {
     "id": "kamarband-khorshidi-yazd",
     "day": 11,
+    "jobs": 9000,
     "category": "energy",
     "city": "yazd",
     "lng": 54.52, "lat": 31.78,
@@ -80,6 +86,7 @@
   {
     "id": "nemone-kafe-tajrish",
     "day": 2,
+    "jobs": 8,
     "example": true,
     "category": "food",
     "city": "tehran",
@@ -94,6 +101,7 @@
   {
     "id": "nemone-brand-valiasr",
     "day": 4,
+    "jobs": 35,
     "example": true,
     "category": "brand",
     "city": "tehran",
@@ -108,6 +116,7 @@
   {
     "id": "nemone-galery-azadi",
     "day": 6,
+    "jobs": 6,
     "example": true,
     "category": "art",
     "city": "tehran",
@@ -122,6 +131,7 @@
   {
     "id": "nemone-startup-milad",
     "day": 8,
+    "jobs": 40,
     "example": true,
     "category": "tech",
     "city": "tehran",
@@ -136,6 +146,7 @@
   {
     "id": "nemone-hotel-isfahan",
     "day": 10,
+    "jobs": 22,
     "example": true,
     "category": "tourism",
     "city": "isfahan",
@@ -150,6 +161,7 @@
   {
     "id": "nemone-clinic-shiraz",
     "day": 12,
+    "jobs": 30,
     "example": true,
     "category": "health",
     "city": "shiraz",

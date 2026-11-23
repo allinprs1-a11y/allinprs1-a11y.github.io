@@ -9,6 +9,19 @@ window.FARDA_CONFIG = {
   // Story day shown in the header. null = highest "day" in data/places.json.
   dayOverride: null,
 
+  // Weekly chapters of the story. The chapter whose day range contains the current day
+  // is shown under the counter; tapping it flies to its city.
+  chapters: [
+    { from: 0, to: 7, city: "tehran", fa: "هفته ۱: تهران دوباره باز می‌شود", en: "Week 1: Tehran reopens" },
+    { from: 8, to: 14, city: "isfahan", fa: "هفته ۲: اصفهان و شیراز", en: "Week 2: Isfahan & Shiraz" },
+    { from: 15, to: 21, city: "rasht", fa: "هفته ۳: ساحل خزر", en: "Week 3: The Caspian coast" },
+    { from: 22, to: 28, city: "kish", fa: "هفته ۴: خلیج فارس", en: "Week 4: The Persian Gulf" }
+  ],
+
+  // Seasonal theme: "auto" (Nowruz 14 Mar–2 Apr, Yalda 18–22 Dec), "nowruz", "yalda" or null.
+  // Preview any theme with ?theme=nowruz or ?theme=yalda.
+  theme: "auto",
+
   // Categories: key → label + colour
   categories: {
     vision:    { fa: "پروژه ملی",          en: "National project", color: "#2ec4b6" },
