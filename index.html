@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ایرانِ فردا · Iran Farda</title>
+<meta name="description" content="شبیه‌سازی مردمی ایرانِ فردا: کسب‌وکار و رویای خود را روی نقشه سه‌بعدی ایران ببینید.">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b1324">
+<meta property="og:title" content="ایرانِ فردا · Iran Farda">
+<meta property="og:description" content="ایران را با هم از نو می‌سازیم. جای شما روی نقشه کجاست؟">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="map" aria-label="نقشه سه‌بعدی ایران"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="favicon.svg" alt="" width="30" height="30">
+    <div>
+      <strong data-i18n="name"></strong>
+      <span class="day" id="dayLabel"></span>
+    </div>
+  </div>
+  <div class="search">
+    <input id="search" type="search" autocomplete="off" data-i18n-ph="searchPh">
+    <ul id="results" class="results" hidden></ul>
+  </div>
+  <button class="lang" id="langBtn" type="button">EN</button>
+</header>
+
+<nav class="bottom">
+  <div class="chips" id="cityChips"></div>
+  <div class="actions">
+    <button id="addBtn" class="primary" type="button" data-i18n="addBtn"></button>
+    <button id="mode3d" class="ghost" type="button" data-i18n="mode3d"></button>
+    <button id="homeBtn" class="ghost" type="button" data-i18n="home"></button>
+  </div>
+</nav>
+
+<aside id="card" class="card" hidden>
+  <button class="close" id="cardClose" type="button" aria-label="بستن">×</button>
+  <span class="cat" id="cardCat"></span>
+  <h2 id="cardName"></h2>
+  <p class="sub" id="cardSub"></p>
+  <p id="cardText"></p>
+  <p class="owner" id="cardOwner"></p>
+  <div class="row">
+    <button id="shareBtn" class="primary" type="button" data-i18n="share"></button>
+    <a id="cardIg" class="ghost btn" target="_blank" rel="noopener" hidden>Instagram</a>
+  </div>
+  <p class="toast" id="toast" hidden></p>
+</aside>
+
+<div id="intro" class="overlay">
+  <div class="intro-box">
+    <img src="favicon.svg" alt="" width="72" height="72">
+    <p class="kicker" data-i18n="kicker"></p>
+    <h1 data-i18n="name"></h1>
+    <p class="lead" data-i18n="lead"></p>
+    <button id="enterBtn" class="primary big" type="button" data-i18n="enter"></button>
+    <p class="fine" data-i18n="disclaimer"></p>
+  </div>
+</div>
+
+<div id="addModal" class="overlay" hidden>
+  <div class="modal">
+    <button class="close" id="addClose" type="button" aria-label="بستن">×</button>
+    <h2 data-i18n="addTitle"></h2>
+    <p data-i18n="addLead"></p>
+    <ol class="steps">
+      <li data-i18n="step1"></li>
+      <li data-i18n="step2"></li>
+      <li data-i18n="step3"></li>
+    </ol>
+    <pre id="template" dir="auto"></pre>
+    <div class="row">
+      <button id="copyTpl" class="primary" type="button" data-i18n="copy"></button>
+      <a id="igLink" class="ghost btn" target="_blank" rel="noopener" hidden>Instagram</a>
+    </div>
+    <p class="fine" data-i18n="privacy"></p>
+  </div>
+</div>
+
+<script src="vendor/maplibre-gl.js"></script>
+<script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
