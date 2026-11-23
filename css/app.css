@@ -205,3 +205,6 @@ body.tour .chapter { display: none; }
 }
 .reel-end.show { opacity: 1; }
 body:not(.tour) .reel-end { display: none; }
+
+body.render .tour-cap, body.render .reel-end { transition: none !important; }
+body.render .maplibregl-ctrl-attrib { opacity: .55; }
