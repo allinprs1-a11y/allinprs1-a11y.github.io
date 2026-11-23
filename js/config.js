@@ -4,7 +4,7 @@ window.FARDA_CONFIG = {
   name: { fa: "ایرانِ فردا", en: "Iran Farda" },
 
   // Instagram username without @. Empty hides the Instagram buttons.
-  instagram: "",
+  instagram: "iranbesazim",
 
   // Story day shown in the header. null = highest "day" in data/places.json.
   dayOverride: null,
