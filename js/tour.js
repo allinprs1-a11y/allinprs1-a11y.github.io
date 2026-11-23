@@ -54,7 +54,7 @@
       }
       if (step.end) {
         const small = document.createElement("span");
-        small.className = "url"; small.textContent = location.host;
+        small.className = "url"; small.textContent = F.CFG.publicHost || location.host;
         cap.appendChild(small);
       }
       cap.classList.add("show");

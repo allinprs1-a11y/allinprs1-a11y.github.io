@@ -122,7 +122,7 @@
     await until(CUES[7]);
     // H · 27.5–32 s: share prompt + handle
     say(7);
-    end.textContent = "@" + (F.CFG.instagram || "") + "  ·  " + location.host;
+    end.textContent = "@" + (F.CFG.instagram || "") + "  ·  " + (F.CFG.publicHost || location.host);
     end.classList.add("show");
     map.easeTo({ bearing: 14, duration: 4400, easing: (x) => x, essential: true });
     await until(END);
@@ -199,7 +199,7 @@
     let cue = 0; CUES.forEach((c, i) => { if (t >= c) cue = i; });
     if (cue !== lastCue) { lastCue = cue; say(cue); }
     end.classList.toggle("show", t >= CUES[7]);
-    if (t >= CUES[7]) end.textContent = "@" + (F.CFG.instagram || "") + "  ·  " + location.host;
+    if (t >= CUES[7]) end.textContent = "@" + (F.CFG.instagram || "") + "  ·  " + (F.CFG.publicHost || location.host);
     // lights: dark from 5.8 s, back on between 7.9 and 9.7 s
     const lk = t < 5.8 ? 1 : clamp01((t - 7.9) / 1.8);
     const stops = LIT_STOPS.map((v, i) => (i % 2 ? mix(DARK, v, lk) : v));

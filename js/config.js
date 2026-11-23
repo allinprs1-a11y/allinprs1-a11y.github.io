@@ -6,6 +6,9 @@ window.FARDA_CONFIG = {
   // Instagram username without @. Empty hides the Instagram buttons.
   instagram: "iranbesazim",
 
+  // Public address printed on Story cards and in videos (empty = the address the page is opened from).
+  publicHost: "allinprs1-a11y.github.io",
+
   // Story day shown in the header. null = highest "day" in data/places.json.
   dayOverride: null,
 

@@ -91,7 +91,7 @@
     ctx.fillText(F.t("storyLine"), edge, y);
 
     // footer: the address people can type
-    const host = location.host + (location.pathname.length > 1 ? location.pathname.replace(/\/$/, "") : "");
+    const host = F.CFG.publicHost || (location.host + (location.pathname.length > 1 ? location.pathname.replace(/\/$/, "") : ""));
     ctx.textAlign = "center"; ctx.direction = "ltr";
     ctx.fillStyle = "rgba(244,185,66,.15)"; roundRect(ctx, 140, H - 170, W - 280, 96, 48); ctx.fill();
     ctx.fillStyle = "#f4b942"; ctx.font = font(700, 44);
