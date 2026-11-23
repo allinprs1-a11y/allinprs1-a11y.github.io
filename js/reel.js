@@ -68,7 +68,7 @@
     const until = (sec) => sleep(Math.max(0, t0 + sec * 1000 - performance.now()));
     const lit = map.getPaintProperty("buildings", "fill-extrusion-color");
     const cafe = F.places.find((p) => p.id === "kafe-ketab-enghelab") || F.places.find((p) => p.category === "food") || F.places[0];
-    const street = (F.memorialList || [])[0];
+    const street = pickStreet();
 
     // A · 0–2.2 s: hook — globe dives to Iran
     map.jumpTo({ center: [40, 28], zoom: 1.6, pitch: 0, bearing: 0 });
@@ -98,7 +98,7 @@
     // E · 15.2–18.8 s: your café rises
     say(4);
     if (cafe) {
-      map.flyTo({ center: [cafe.lng, cafe.lat], zoom: F.zoomFor(cafe) - 0.2, pitch: 64, bearing: 35, duration: 1300, essential: true });
+      map.flyTo({ center: [cafe.lng, cafe.lat], zoom: 17.2, pitch: 60, bearing: 35, duration: 1300, essential: true });
       await until(16.5);
       F.grow && F.grow(cafe.id);
       map.easeTo({ bearing: 62, duration: 2200, easing: (x) => x, essential: true });
@@ -106,10 +106,10 @@
     await until(CUES[5]);
     // F · 18.8–22.7 s: a memorial street
     say(5);
+    streetSub();
     if (street) {
-      const pts = street.lines.flat();
-      const mid = pts[Math.floor(pts.length / 2)];
-      map.flyTo({ center: mid, zoom: 15.2, pitch: 60, bearing: 0, duration: 1300, essential: true });
+      const sc = streetCam(street);
+      map.flyTo({ center: sc.c, zoom: sc.z, pitch: sc.p, bearing: sc.b, duration: 1300, essential: true });
       await until(20.2);
       map.easeTo({ bearing: 20, duration: 2400, easing: (x) => x, essential: true });
     }
@@ -129,6 +129,36 @@
     window.__reelDone = true;
   }
   F.reelRun = run;
+
+  // Small line under the caption naming the street: new name and former name.
+  function streetSub() {
+    const st = pickStreet();
+    if (!st) return;
+    const add = () => {
+      const a = document.createElement("span"), b = document.createElement("span");
+      a.textContent = F.lang === "en" ? "Javidnam " + st.name + " St." : "خیابان جاویدنام " + st.name;
+      b.textContent = F.lang === "en" ? "formerly “" + st.old + "”" : "پیش‌تر «" + st.old + "»";
+      b.style.opacity = "0.75";
+      cap.append(a, b);
+    };
+    if (document.body.classList.contains("render")) add(); else setTimeout(add, 300);
+  }
+  function pickStreet() {
+    const L = F.memorialList || [];
+    return L.find((m) => m.id === "jn-15") || L.find((m) => m.city === "tehran") || L[0];
+  }
+  function streetCam(street) {
+    const pts = street.lines.flat();
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+    const c = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+    const w = (Math.max(...xs) - Math.min(...xs)) * 111320 * Math.cos((c[1] * Math.PI) / 180);
+    const h = (Math.max(...ys) - Math.min(...ys)) * 110570;
+    const len = Math.max(w, h, 300);
+    const px = 0.55 * Math.min(window.innerWidth, window.innerHeight);
+    const z = Math.min(16.5, Math.log2((156543 * Math.cos((c[1] * Math.PI) / 180) * px) / len));
+    const b = h >= w ? 0 : 90;                       // look along the street
+    return { c, z, p: 58, b };
+  }
 
   // ── frame-exact renderer: reelSeek(t) puts the map exactly where the script is at t seconds ──
   const LIT_STOPS = [0, "#363249", 15, "#4c4459", 40, "#6c5d66", 90, "#8f7668", 180, "#b39073"];
@@ -165,9 +195,7 @@
   let plan = null, lastCue = -1;
   function buildPlan() {
     const cafe = F.places.find((p) => p.id === "kafe-ketab-enghelab") || F.places.find((p) => p.category === "food") || F.places[0];
-    const street = (F.memorialList || [])[0];
-    const pts = street ? street.lines.flat() : [[51.4, 35.7]];
-    const mid = pts[Math.floor(pts.length / 2)];
+    const street = pickStreet();
     const G = { c: [40, 28], z: 1.6, p: 0, b: 0 };
     const IR = { c: F.IRAN_VIEW.center, z: 4.6, p: 30, b: 0 };
     const IRb = { ...IR, z: 5.0, p: 36, b: -12 };
@@ -175,10 +203,10 @@
     const TEHb = { ...TEH, b: 48 };
     const NO = { c: [49.8, 35.6], z: 5.9, p: 45, b: 0 };
     const NOb = { ...NO, z: 6.2, b: 8 };
-    const CA = { c: [cafe.lng, cafe.lat], z: F.zoomFor(cafe) - 0.2, p: 64, b: 35 };
+    const CA = { c: [cafe.lng, cafe.lat], z: 17.2, p: 60, b: 35 };
     const CAb = { ...CA, b: 62 };
-    const ST = { c: mid, z: 15.2, p: 60, b: 0 };
-    const STb = { ...ST, b: 20 };
+    const ST = street ? streetCam(street) : { c: [51.4, 35.7], z: 15, p: 58, b: 0 };
+    const STb = { ...ST, b: ST.b + 12 };
     const I2 = { c: F.IRAN_VIEW.center, z: 4.9, p: 38, b: -8 };
     const I2b = { ...I2, b: 4 }, I2c = { ...I2, b: 14 };
     const seg = [
@@ -197,7 +225,7 @@
     map.jumpTo({ center: cam.c, zoom: cam.z, pitch: cam.p, bearing: cam.b });
     // captions
     let cue = 0; CUES.forEach((c, i) => { if (t >= c) cue = i; });
-    if (cue !== lastCue) { lastCue = cue; say(cue); }
+    if (cue !== lastCue) { lastCue = cue; say(cue); if (cue === 5) streetSub(); }
     end.classList.toggle("show", t >= CUES[7]);
     if (t >= CUES[7]) end.textContent = "@" + (F.CFG.instagram || "") + "  ·  " + (F.CFG.publicHost || location.host);
     // lights: dark from 5.8 s, back on between 7.9 and 9.7 s
@@ -208,8 +236,23 @@
     // the café grows between 16.5 and 18.1 s
     const g = t < 16.5 ? 0.02 : Math.max(0.02, 1 - Math.pow(1 - clamp01((t - 16.5) / 1.6), 3));
     map.setFeatureState({ source: "footprints", id: plan.cafe.id }, { grow: t < 15.2 ? 1 : g });
+    emphasiseStreet(t >= 18.3 && t < 23.5);
   }
   F.reelSeek = seek;
+
+  // Thicker, brighter memorial line while its scene is on screen.
+  let memDefault = null, memBold = null;
+  function emphasiseStreet(on) {
+    if (!map.getLayer("memorial-line")) return;
+    if (!memDefault) memDefault = {
+      lw: map.getPaintProperty("memorial-line", "line-width"), gw: map.getPaintProperty("memorial-glow", "line-width"),
+      go: map.getPaintProperty("memorial-glow", "line-opacity") };
+    if (memBold === on) return;
+    memBold = on;
+    map.setPaintProperty("memorial-line", "line-width", on ? 7 : memDefault.lw);
+    map.setPaintProperty("memorial-glow", "line-width", on ? 30 : memDefault.gw);
+    map.setPaintProperty("memorial-glow", "line-opacity", on ? 0.95 : memDefault.go);
+  }
 
   F.ready.then(() => {
     document.getElementById("intro").hidden = true;
