@@ -75,6 +75,17 @@
     list.forEach((m) => (byId[m.id] = m));
     F.memorialList = list;
     map.addSource("memorial", { type: "geojson", data: geo(), promoteId: "id" });
+    // candle-like dots so the streets are visible from the country view
+    map.addSource("memorial-dots", { type: "geojson", data: { type: "FeatureCollection", features: list.map((m) => {
+      const pts = m.lines.flat(); return { type: "Feature", properties: { id: m.id }, geometry: { type: "Point", coordinates: pts[Math.floor(pts.length / 2)] } };
+    }) } });
+    map.addLayer({ id: "memorial-dots-glow", type: "circle", source: "memorial-dots", maxzoom: 11,
+      paint: { "circle-color": "#fff3d6", "circle-blur": 1, "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 6, 10, 14],
+        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 9.5, 0.55, 11, 0] } });
+    map.addLayer({ id: "memorial-dots", type: "circle", source: "memorial-dots", maxzoom: 11,
+      paint: { "circle-color": "#ffffff", "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 1.6, 10, 3],
+        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 9.5, 1, 11, 0] } });
+    map.on("click", "memorial-dots-glow", (e) => e.features[0] && openStreet(e.features[0].properties.id, true));
     map.addLayer({ id: "memorial-glow", type: "line", source: "memorial", minzoom: 10,
       layout: { "line-cap": "round", "line-join": "round" },
       paint: { "line-color": "#fff3d6", "line-blur": 6, "line-opacity": ["case", ["boolean", ["feature-state", "sel"], false], 0.9, 0.45],
@@ -102,6 +113,51 @@
       if (intro.hidden) go(); else $("enterBtn").addEventListener("click", () => map.once("moveend", go), { once: true });
     }
   });
+
+  // ── admin: ?pickstreet=1 → tap a street to get a ready memorial.json entry ──
+  if (F.params.has("pickstreet")) {
+    const km = (a, b) => Math.hypot((a[0] - b[0]) * 111.32 * Math.cos((a[1] * Math.PI) / 180), (a[1] - b[1]) * 110.57);
+    const segDist = (p, a, b) => {
+      const ax = (a[0] - p[0]) * 111.32 * Math.cos((p[1] * Math.PI) / 180), ay = (a[1] - p[1]) * 110.57;
+      const bx = (b[0] - p[0]) * 111.32 * Math.cos((p[1] * Math.PI) / 180), by = (b[1] - p[1]) * 110.57;
+      const dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+      const k = l2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / l2)) : 0;
+      return Math.hypot(ax + k * dx, ay + k * dy);
+    };
+    const linesOf = (g) => (g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : []);
+    map.on("click", (e) => {
+      const p = [e.lngLat.lng, e.lngLat.lat];
+      const feats = map.querySourceFeatures("omt", { sourceLayer: "transportation_name" });
+      let best = null;
+      for (const f of feats) {
+        const name = f.properties["name:fa"] || f.properties.name;
+        if (!name) continue;
+        for (const ln of linesOf(f.geometry)) for (let i = 1; i < ln.length; i++) {
+          const d = segDist(p, ln[i - 1], ln[i]);
+          if (!best || d < best.d) best = { d, name };
+        }
+      }
+      if (!best || best.d > 0.08) return;
+      const lines = [], seen = new Set();
+      for (const f of feats) {
+        if ((f.properties["name:fa"] || f.properties.name) !== best.name) continue;
+        for (const ln of linesOf(f.geometry)) {
+          if (!ln.some((q) => km(q, p) < 3)) continue;
+          const r = ln.map((q) => [+q[0].toFixed(5), +q[1].toFixed(5)]);
+          const key = r[0].join() + r[r.length - 1].join();
+          if (!seen.has(key)) { seen.add(key); lines.push(r); }
+        }
+      }
+      const near = F.cities.reduce((b, c) => { const d = km([c.lng, c.lat], p); return !b || d < b.d ? { id: c.id, d } : b; }, null);
+      const entry = { id: "jn-" + Date.now().toString(36), name: "", age: null, place: "", date: "", city: near ? near.id : "tehran",
+        old: best.name, source: "", lines };
+      const json = JSON.stringify(entry);
+      F.closeCard();
+      $("template").textContent = json + ",";
+      $("addModal").hidden = false;
+      $("copyTpl").onclick = async () => { try { await navigator.clipboard.writeText(json + ","); } catch (err) { /* ignore */ } $("copyTpl").textContent = "✓"; };
+    });
+  }
 
   // close: clear selection
   F.on("open", () => { if (current) { map.setFeatureState({ source: "memorial", id: current }, { sel: false }); current = null; } });

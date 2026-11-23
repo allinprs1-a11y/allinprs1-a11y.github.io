@@ -208,3 +208,5 @@ body:not(.tour) .reel-end { display: none; }
 
 body.render .tour-cap, body.render .reel-end { transition: none !important; }
 body.render .maplibregl-ctrl-attrib { opacity: .55; }
+
+.mem-ask { background: rgba(255,243,214,.08); border: 1px solid rgba(255,243,214,.3); border-radius: 12px; padding: .7rem .8rem; line-height: 1.9; }
