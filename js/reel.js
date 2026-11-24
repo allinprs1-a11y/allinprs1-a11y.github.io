@@ -3,7 +3,7 @@
 (function () {
   "use strict";
   const F = window.FARDA;
-  if (!F || !F.params.has("reel") || F.params.get("reel") === "2") return;
+  if (!F || !F.params.has("reel") || ["2", "3"].includes(F.params.get("reel"))) return;
   const map = F.map;
   document.body.classList.add("tour");
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
