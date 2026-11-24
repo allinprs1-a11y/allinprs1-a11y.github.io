@@ -137,7 +137,7 @@
     let cue = -1; CUES.forEach((c, i) => { if (t >= c) cue = i; });
     if (cue !== lastCue) { lastCue = cue; if (cue >= 0) say(cue); else cap.classList.remove("show"); }
     end.classList.toggle("show", t >= CUES[10]);
-    if (t >= CUES[10]) end.textContent = "@" + (F.CFG.instagram || "") + "  ·  " + (F.CFG.publicHost || location.host);
+    if (t >= CUES[10]) end.textContent = "@" + (F.CFG.instagram || "");
   }
   F.reelSeek = seek;
 
